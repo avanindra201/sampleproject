@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: myservice
+  name: myservice
+  namespace: avanindra
+spec:
+  ports:
+  - name: api
+    port: 8082
+    targetPort: 8082
+  selector:
+    service: myservice

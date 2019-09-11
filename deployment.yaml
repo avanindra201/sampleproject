@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: node-deployment
+  namespace: dummy
+spec:
+  replicas: 2
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        service: myservice
+    spec:
+      imagePullSecrets:
+      - name: acr-auth
+      containers:
+      - name: nodeapp
+        image: docker.io//reoname
+        command: ["node"]
+        args: ["index.js"]
+        ports:
+        - containerPort: 8082

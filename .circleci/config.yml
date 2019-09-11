@@ -1,0 +1,45 @@
+version: 2
+jobs:  
+  build:
+    docker:
+      - image: pocregistry12.azurecr.io/base-deployment-image:latest
+        auth:
+          username: pocregistry12.azurecr.io
+          password: e2aef6ba-094e-4642-933e-3abdfef0dba2
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: azure login
+          command: ./bin/login.sh dev
+      - run:
+          name: build
+          command: ./bin/build.sh $CIRCLE_SHA1
+  deploy_dev:
+    docker:
+      - image: pocregistry12.azurecr.io/base-deployment-image:latest
+        auth:
+          username: pocregistry12.azurecr.io
+          password: e2aef6ba-094e-4642-933e-3abdfef0dba2
+    steps:
+      - checkout
+      - run:
+          name: azure login
+          command:   ./bin/login.sh dev
+      - run:
+          name: deploy
+          command: ./bin/deploy.sh $CIRCLE_SHA1 dev
+workflows:
+  version: 2
+  build-n-deploy:
+    jobs:
+      - build:
+          context: org-global
+      - deploy_dev:
+          context: org-global
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master

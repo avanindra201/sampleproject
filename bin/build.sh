@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+COMMIT_SHA=$1
+az acr login -n $ACR_REGISTRY_NAME
+IMAGE_FULL_TAG=$DOCKER_REGISTRY_HOST/$DOCKER_IMAGE_NAME:$COMMIT_SHA
+docker build -t $IMAGE_FULL_TAG .
+docker push $IMAGE_FULL_TAG
